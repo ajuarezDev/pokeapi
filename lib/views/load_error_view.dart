@@ -133,7 +133,7 @@ class ButtonRefresh extends StatelessWidget {
               )
             ),
             onPressed:  () async {
-
+              BlocProvider.of<PokeCubits>(context).loadPokemon();
             },
           )
         ),

@@ -80,7 +80,7 @@ class _PageView extends StatelessWidget {
             if (index < pokemon.length){
               return _pokemon(pokemon[index], context);
             }else{
-              Timer(Duration(milliseconds: 30), (){
+              Timer(const Duration(milliseconds: 30), (){
                 scrollController.jumpTo(
                   scrollController.position.maxScrollExtent
                 );
@@ -95,41 +95,82 @@ class _PageView extends StatelessWidget {
           }, 
           itemCount: pokemon.length + (isLoading ? 1: 0),
         );
-
-      //   final pokemon = (state as PokemonLoaded).pokemon;
-
-      //   return  SingleChildScrollView(
-      //     child: Column(
-      //       children: pokemon.map((e) => _pokemon(e, context)).toList(),
-      //     ),
-      //   );
       },
     );
   }
 
   Widget _pokemon(Pokemon pokemon, BuildContext context){
 
-    var url = pokemon.url;
-    print(url);
+    String url = pokemon.url;
+    String name = pokemon.name;
 
-    return Card(
-      // key: const Key("${pokemon.name}"), 
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            bottom: BorderSide(color: Colors.grey)
-          )
-        ),
-        child: Row(
-          children: [
-            Text(pokemon.name),
-          ],
-        ),
+    BlocProvider.of<PokeCubits>(context).loadImagen(url);
+    // var imagen = BlocProvider.of<PokeCubits>(context, listen: true);
+
+
+
+    // String imageurl = imagen.getImagen;
+    // print(imageurl);
+    return  Card(
+      semanticContainer: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Expanded(
+          //   flex: 1,
+          //     child: Container(
+          //     decoration: BoxDecoration(
+          //       image: DecorationImage(
+          //           image: NetworkImage(""),
+          //           fit: BoxFit.fill),
+          //     ),
+          //   )
+          // ),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text('$name', style: TextStyle(
+                          color: Colors.teal[400],
+                          fontSize: 14,
+                        ),
+                          maxLines: 2)
+                        ,
+                      ),
+                      
+                    ],
+                  ),
+                  SizedBox(height: 10,),
+                  // Expanded(
+                  //   child: Row(
+                  //     children: [
+                  //       Icon(LineIcons.mapMarked, color: Colors.teal[400],),
+                  //       SizedBox(width: 10,),
+                  //       Expanded(
+                  //         child: Text('$direccion', style: TextStyle(color: Color(0xfff303030)), maxLines: 2,),
+                  //       ),
+                        
+                  //     ],
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),    
+        ],
       )
     );
+
   }
 }
 
