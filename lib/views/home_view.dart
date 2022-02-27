@@ -10,6 +10,8 @@ import 'package:poke/ui/colors.dart';
 import 'package:poke/ui/name.dart';
 import 'package:poke/views/load_error_view.dart';
 import 'package:poke/views/load_view.dart';
+import 'package:cross_connectivity/cross_connectivity.dart';
+
 
 class HomeView extends StatelessWidget {
 
@@ -48,6 +50,10 @@ class HomeView extends StatelessWidget {
     return BlocBuilder<PokeCubits, PokemonState>(
       builder: (context, state){
 
+        
+       
+
+        
         if (state is PokemonError){
           return const LoadErrorView();
         }
@@ -66,28 +72,36 @@ class HomeView extends StatelessWidget {
           pokemon = state.pokemon;
         }
 
-        return ListView.separated(
-          controller: scrollController,
-          itemBuilder: (context, index){
-            if (index < pokemon.length){
-              return _pokemon(pokemon[index], context);
-            }else{
-              Timer(const Duration(milliseconds: 30), (){
-                scrollController.jumpTo(
-                  scrollController.position.maxScrollExtent
+        return ConnectivityBuilder(
+          builder: (context, isConnected, status) =>
+            isConnected == false ? LoadErrorView() 
+            : ListView.separated(
+              controller: scrollController,
+              itemBuilder: (context, index){
+                if (index < pokemon.length){
+                  return _pokemon(pokemon[index], context);
+                }else{
+                  Timer(const Duration(milliseconds: 30), (){
+                    scrollController.jumpTo(
+                      scrollController.position.maxScrollExtent
+                    );
+                  });
+                  return const LoadView();
+                }
+              }, 
+              separatorBuilder: (context, index){
+                return const Divider(
+                  color: Colors.white,
+                  height: 1.0,
                 );
-              });
-              return const LoadView();
-            }
-          }, 
-          separatorBuilder: (context, index){
-            return const Divider(
-              color: Colors.white,
-              height: 1.0,
-            );
-          }, 
-          itemCount: pokemon.length + (isLoading ? 1: 0),
+              }, 
+              itemCount: pokemon.length + (isLoading ? 1: 0),
+            )
+          
+        
         );
+
+        // return 
       },
     );
   }
@@ -138,11 +152,19 @@ class HomeView extends StatelessWidget {
                           ),
                           // height: 75,
                           // width: 75,
-                          child: Image.network("$urlImagen",
+                          child: FadeInImage(
+                            placeholder: AssetImage('assets/gif/loading.gif'),
+                            image: NetworkImage(urlImagen),
+                            // fit: BoxFit.cover,
                             height: 10.0,
                             width: 10.0,
                           ),
-                        )
+                        ),  
+                          
+                          
+                          // Image.network("$urlImagen",
+                          // ),
+                        // )
                       
                       ),
                       Expanded(

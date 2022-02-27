@@ -4,7 +4,9 @@ import 'package:poke/models/pokemon.dart';
 
 abstract class PokemonState {}
 
-class InitialState extends PokemonState{}
+class InitialState extends PokemonState{
+  
+}
 
 class PokemonLoaded extends PokemonState{
 

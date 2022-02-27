@@ -2,8 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:poke/cubit/poke_cubit_state.dart';
 import 'package:poke/models/pokemon.dart';
-
 import 'package:poke/repository/pokemon_repository.dart';
+import 'package:flutter/services.dart';
 
 class PokeCubits extends Cubit<PokemonState> {
   // PokeCubits() : super(InitialState()){
@@ -11,13 +11,33 @@ class PokeCubits extends Cubit<PokemonState> {
 
   final PokemonRespository pokemonRespository;
   PokeCubits({required this.pokemonRespository}) : super(InitialState());
+  
+  
 
   int page = 0;
   String _url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
   
 
+  valideConexion() async{
+    // ConnectivityResult _connectionStatus = ConnectivityResult.none;
+    // final Connectivity _connectivity = Connectivity();
+    // try {
+    //   result = await _connectivity.checkConnectivity();
+    // } on PlatformException catch (e) {
+    //   developer.log('Couldn\'t check connectivity status', error: e);
+    //   return;
+    // }
+
+
+    // print("valida conexion $result");
+  }
+
+
   loadPokemon(){
-    if (state is PokemonLoading) return;
+    valideConexion();
+    if (state is PokemonLoading) {
+      return;
+    } 
     
     final currentState = state;
 
