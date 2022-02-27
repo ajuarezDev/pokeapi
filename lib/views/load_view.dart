@@ -11,26 +11,15 @@ class LoadView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   
-    return  Scaffold(
-      
-      body:Center(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  child: _PageView(),
-
-                ),
-              ),
-              
-            ],
-          )),
-      
+    return  Center(
+      child: Column(
+        children: <Widget>[
+          _PageView(),
+        ],
+      )
     );
   }
 }
-
 
 class _PageView extends StatelessWidget {
   
@@ -38,8 +27,7 @@ class _PageView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Center(
-      child: Form(
-        child: ListView(
+      child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(top: 0),
           children: [
@@ -47,14 +35,11 @@ class _PageView extends StatelessWidget {
             TextoLoading(),
           ],
         )
-      ),
     );
   }
 }
 
 class TextoLoading extends StatelessWidget {
-  // Logo({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     

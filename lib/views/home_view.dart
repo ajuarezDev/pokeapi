@@ -1,9 +1,12 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:poke/cubit/poke_cubit_state.dart';
 import 'package:poke/cubit/poke_cubits.dart';
+import 'package:poke/models/pokemon.dart';
 import 'package:poke/ui/colors.dart';
 import 'package:poke/ui/name.dart';
 import 'package:poke/views/load_error_view.dart';
@@ -14,30 +17,42 @@ import 'package:poke/views/load_view.dart';
 // const _textName = TextEncabezado.name;
 
 class HomeView extends StatelessWidget {
-  const HomeView({Key? key}) : super(key: key);
+  HomeView({Key? key}) : super(key: key);
+  
   
   @override
   Widget build(BuildContext context) {
-  
+    BlocProvider.of<PokeCubits>(context).loadPokemon();
+
     return  Scaffold(
       appBar: AppBar(
         title: TextEncabezado.name,
         backgroundColor: ThemeColor.barColor,
       ),
       body: _PageView(),
-      
     );
   }
 }
 
-
 class _PageView extends StatelessWidget {
   
+  final scrollController = ScrollController();
+
+  void setupScrollController(context) {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge){
+        if (scrollController.position.pixels != 0){
+          BlocProvider.of<PokeCubits>(context).loadPokemon();
+
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    var main = BlocProvider.of<PokeCubits>(context).fetchPokemon();
-
+    setupScrollController(context);
     return BlocBuilder<PokeCubits, PokemonState>(
       builder: (context, state){
 
@@ -45,28 +60,58 @@ class _PageView extends StatelessWidget {
           return const LoadErrorView();
         }
 
-        
+        if (state is PokemonLoading && state.isFirstFetch){ 
           return const LoadView();
-        if (state is! PokemonLoaded){
         }
 
-        
+        List<Pokemon> pokemon = [];
+        bool isLoading = false;
 
-        final pokemon = (state as PokemonLoaded).pokemon;
+        if (state is PokemonLoading){
+          pokemon = state.oldPokemon;
+          isLoading = true;
+        }else if (state is PokemonLoaded) {
+          pokemon = state.pokemon;
+        }
 
-        // print(pokemon);
-
-
-        return  SingleChildScrollView(
-          child: Column(
-            children: pokemon.map((e) => _pokemon(e, context)).toList(),
-          ),
+        return ListView.separated(
+          controller: scrollController,
+          itemBuilder: (context, index){
+            if (index < pokemon.length){
+              return _pokemon(pokemon[index], context);
+            }else{
+              Timer(Duration(milliseconds: 30), (){
+                scrollController.jumpTo(
+                  scrollController.position.maxScrollExtent
+                );
+              });
+              return const LoadView();
+            }
+          }, 
+          separatorBuilder: (context, index){
+            return const Divider(
+              color: Colors.red,
+            );
+          }, 
+          itemCount: pokemon.length + (isLoading ? 1: 0),
         );
+
+      //   final pokemon = (state as PokemonLoaded).pokemon;
+
+      //   return  SingleChildScrollView(
+      //     child: Column(
+      //       children: pokemon.map((e) => _pokemon(e, context)).toList(),
+      //     ),
+      //   );
       },
     );
   }
 
-  Widget _pokemon(pokemon, context){
+  Widget _pokemon(Pokemon pokemon, BuildContext context){
+
+    var url = pokemon.url;
+    print(url);
+
     return Card(
       // key: const Key("${pokemon.name}"), 
       child: Container(

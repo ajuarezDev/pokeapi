@@ -8,9 +8,11 @@ class PokemonRespository {
   final PokemonService pokemonService;
 
   PokemonRespository({required this.pokemonService});
+  
+  // int page = 100;
 
-  Future<List<Pokemon>> fetchPokemon() async{
-    final pokemonList = await pokemonService.getPokemonList();
+  Future<List<Pokemon>> fetchPokemon(page) async{
+    final pokemonList = await pokemonService.getPokemonList(page);
     _code = pokemonService.getCode;
 
     return pokemonList.map((e) => Pokemon.fromJson(e)).toList();
