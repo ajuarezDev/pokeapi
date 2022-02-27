@@ -44,19 +44,28 @@ class PokemonService {
   
   int get getCode => _code;
 
-  Future<String> getPokemonDetails(id) async {
-    await dotenv.load(fileName: ".env");
-    String _baseUrl = dotenv.env['URL_API'].toString();
-    String _baseUrlComplemento = '/pokemon/$id';
 
-    final response = await http.get(Uri.parse(_baseUrl + _baseUrlComplemento),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    // body: json.encode(data)
-    );
+  //toma la imagen desde la web
+  // Future<String> getPokemonImagen(url) async {
+  //   String _baseUrl = url;
 
-    return response.body;
-  }
+  //   try {
+  //     final response = await http.get(Uri.parse(_baseUrl),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //       },
+  //     );
+  //     final preRes = json.decode(response.body);
+  //     var response2 = (preRes['sprites']['other']['official-artwork']['front_default']);
+  //     // final List response2 = preRes['sprites']['other']['official-artwork'];
+  //     // print(preRes['sprites']['other']['official-artwork']);
+  //     // print("response2 $response2");
+  //     return (response2);
+
+  //   } catch (e) {
+  //     print(e);
+  //     return '';
+  //   }
+  // }
 }

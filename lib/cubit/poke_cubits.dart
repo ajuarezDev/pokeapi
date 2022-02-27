@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:poke/cubit/poke_cubit_state.dart';
 import 'package:poke/models/pokemon.dart';
+
 import 'package:poke/repository/pokemon_repository.dart';
 
 class PokeCubits extends Cubit<PokemonState> {
@@ -11,7 +13,8 @@ class PokeCubits extends Cubit<PokemonState> {
   PokeCubits({required this.pokemonRespository}) : super(InitialState());
 
   int page = 0;
-
+  String _url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
+  
 
   loadPokemon(){
     if (state is PokemonLoading) return;
@@ -37,7 +40,23 @@ class PokeCubits extends Cubit<PokemonState> {
         emit(PokemonError());
       }
     });
-
   }
+
+  // url() async{
+  //    await dotenv.load(fileName: ".env");
+  //   String baseUrl = dotenv.env['URL_IMAGEN'].toString();
+  //   _url = baseUrl;
+  //   // return _baseUrl;
+  // }
+
+  String get getUrl => _url;
+
+
+  
+
+
+
+
+  
 
 }

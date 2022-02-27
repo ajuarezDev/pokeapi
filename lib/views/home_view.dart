@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:poke/cubit/poke_cubit_state.dart';
 import 'package:poke/cubit/poke_cubits.dart';
@@ -12,16 +11,27 @@ import 'package:poke/ui/name.dart';
 import 'package:poke/views/load_error_view.dart';
 import 'package:poke/views/load_view.dart';
 
-
-// const _barColor = ThemeColor.barColor;
-// const _textName = TextEncabezado.name;
-
 class HomeView extends StatelessWidget {
-  HomeView({Key? key}) : super(key: key);
+
+  // HomeView({Key? key}) : super(key: key);
   
+  final scrollController = ScrollController();
+
+  void setupScrollController(context) {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge){
+        print(scrollController.position.pixels);
+          BlocProvider.of<PokeCubits>(context).loadPokemon();
+        // if (scrollController.position.pixels != 0){
+
+        // }
+      }
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
+    setupScrollController(context);
     BlocProvider.of<PokeCubits>(context).loadPokemon();
 
     return  Scaffold(
@@ -29,30 +39,12 @@ class HomeView extends StatelessWidget {
         title: TextEncabezado.name,
         backgroundColor: ThemeColor.barColor,
       ),
-      body: _PageView(),
+      body: loadingPoke(),
     );
   }
-}
 
-class _PageView extends StatelessWidget {
-  
-  final scrollController = ScrollController();
+  Widget loadingPoke () {
 
-  void setupScrollController(context) {
-    scrollController.addListener(() {
-      if (scrollController.position.atEdge){
-        if (scrollController.position.pixels != 0){
-          BlocProvider.of<PokeCubits>(context).loadPokemon();
-
-        }
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    setupScrollController(context);
     return BlocBuilder<PokeCubits, PokemonState>(
       builder: (context, state){
 
@@ -80,7 +72,7 @@ class _PageView extends StatelessWidget {
             if (index < pokemon.length){
               return _pokemon(pokemon[index], context);
             }else{
-              Timer(Duration(milliseconds: 30), (){
+              Timer(const Duration(milliseconds: 30), (){
                 scrollController.jumpTo(
                   scrollController.position.maxScrollExtent
                 );
@@ -90,46 +82,105 @@ class _PageView extends StatelessWidget {
           }, 
           separatorBuilder: (context, index){
             return const Divider(
-              color: Colors.red,
+              color: Colors.white,
+              height: 1.0,
             );
           }, 
           itemCount: pokemon.length + (isLoading ? 1: 0),
         );
-
-      //   final pokemon = (state as PokemonLoaded).pokemon;
-
-      //   return  SingleChildScrollView(
-      //     child: Column(
-      //       children: pokemon.map((e) => _pokemon(e, context)).toList(),
-      //     ),
-      //   );
       },
     );
   }
+  
+  Widget _pokemon(Pokemon pokemon, BuildContext context) {
 
-  Widget _pokemon(Pokemon pokemon, BuildContext context){
+    String urlPoke = pokemon.url;
+    String name = pokemon.name;
+    List part = urlPoke.split("/");
+    String nameImage = "${part[6].toString()}.png";
 
-    var url = pokemon.url;
-    print(url);
+    var imagen = BlocProvider.of<PokeCubits>(context, listen: true);
+    String url = imagen.getUrl;
+    String urlImagen = "$url$nameImage";
+    String nameUpper = name[0].toUpperCase()+name.substring(1);
+    String numberPoke = part[6].padLeft(3, '0');
 
-    return Card(
-      // key: const Key("${pokemon.name}"), 
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            bottom: BorderSide(color: Colors.grey)
-          )
+    return Padding(
+      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
         ),
-        child: Row(
-          children: [
-            Text(pokemon.name),
-          ],
-        ),
+        child: Container(
+          // color: Colors.redAccent,
+          height: 100,
+                decoration:  BoxDecoration(
+                  color: Color(0xFFd94256),
+                  borderRadius: BorderRadius.circular(20)
+
+                  // borderRadius: BorderRadius.circular(15),
+                  
+                ),
+                child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: 200,
+                          width: 200,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              // scale: 0.1,
+                              // alignment: Alignment(6, 1), 
+                              image: AssetImage('assets/images/pokeball.png'),
+                              fit:BoxFit.fitWidth
+                            ),
+                          ),
+                          // height: 75,
+                          // width: 75,
+                          child: Image.network("$urlImagen",
+                            height: 10.0,
+                            width: 10.0,
+                          ),
+                        )
+                      
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(nameUpper, style: const TextStyle(
+                        color:  Color(0xFFfefcfc),
+                        fontSize: 25,
+                        ),
+                      ),
+                      
+                      ),
+                      Expanded(
+                        child : Padding(
+                        padding: EdgeInsets.only(top: 55, left: 0),
+                          child: Text("#$numberPoke", 
+                          style: TextStyle(
+                            color: Color(0xFFe2707f),
+                            fontSize: 31,
+                          )
+                        ),
+                      ) 
+                      
+                      ),
+                    ],
+                  ),
+                    // color: Colors.transparent,
+                    // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    // shadowColor: Colors.grey,
+                    // child: Text('$nameUpper'))
+                
+              )
       )
-    );
+    ) ;
+
+
   }
 }
+
+
+
 
