@@ -46,29 +46,26 @@ class PokemonService {
 
 
   //toma la imagen desde la web
-  Future<String> getPokemonImagen(url) async {
-    String _baseUrl = url;
+  // Future<String> getPokemonImagen(url) async {
+  //   String _baseUrl = url;
 
-    try {
-      final response = await http.get(Uri.parse(_baseUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-      final preRes = json.decode(response.body);
-      var response2 = (preRes['sprites']['other']['official-artwork']['front_default']);
-      // final List response2 = preRes['sprites']['other']['official-artwork'];
-      // print(preRes['sprites']['other']['official-artwork']);
-      // print("response2 $response2");
-      return (response2);
+  //   try {
+  //     final response = await http.get(Uri.parse(_baseUrl),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //       },
+  //     );
+  //     final preRes = json.decode(response.body);
+  //     var response2 = (preRes['sprites']['other']['official-artwork']['front_default']);
+  //     // final List response2 = preRes['sprites']['other']['official-artwork'];
+  //     // print(preRes['sprites']['other']['official-artwork']);
+  //     // print("response2 $response2");
+  //     return (response2);
 
-    } catch (e) {
-      print(e);
-      return '';
-    }
-
-
-
-  }
+  //   } catch (e) {
+  //     print(e);
+  //     return '';
+  //   }
+  // }
 }

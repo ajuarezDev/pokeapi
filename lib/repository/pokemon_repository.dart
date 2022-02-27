@@ -19,12 +19,12 @@ class PokemonRespository {
     return pokemonList.map((e) => Pokemon.fromJson(e)).toList();
   }
 
-  Future<String> fetchPokemonImage(url) async{
-    final pokemonList = await pokemonService.getPokemonImagen(url);
-    // print("list $pokemonList");
-    return pokemonList;
-    // return pokemonList.map((e) => PokemonDetails.fromJson(e)).toList();
-  }
+  // Future<String> fetchPokemonImage(url) async{
+  //   final pokemonList = await pokemonService.getPokemonImagen(url);
+  //   // print("list $pokemonList");
+  //   return pokemonList;
+  //   // return pokemonList.map((e) => PokemonDetails.fromJson(e)).toList();
+  // }
 
   int get getCode => _code;
 }

@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:poke/cubit/poke_cubit_state.dart';
 import 'package:poke/models/pokemon.dart';
-import 'package:poke/models/pokemon_details.dart';
+
 import 'package:poke/repository/pokemon_repository.dart';
 
 class PokeCubits extends Cubit<PokemonState> {
@@ -12,6 +13,8 @@ class PokeCubits extends Cubit<PokemonState> {
   PokeCubits({required this.pokemonRespository}) : super(InitialState());
 
   int page = 0;
+  String _url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
+  
 
   loadPokemon(){
     if (state is PokemonLoading) return;
@@ -39,43 +42,17 @@ class PokeCubits extends Cubit<PokemonState> {
     });
   }
 
+  // url() async{
+  //    await dotenv.load(fileName: ".env");
+  //   String baseUrl = dotenv.env['URL_IMAGEN'].toString();
+  //   _url = baseUrl;
+  //   // return _baseUrl;
+  // }
 
-  String _image = '';
+  String get getUrl => _url;
 
-  loadImagen(url){
-    
-    // if (state is PokemonLoading) return;
-    
-    // final currentState = state;
 
-    // var oldPokemon = <Pokemon>[];
-
-    // if (currentState is PokemonLoaded){
-    //   oldPokemon = currentState.pokemon;
-    // } 
-
-    // emit(PokemonLoading(oldPokemon, isFirstFetch:  page == 1));
-    pokemonRespository.fetchPokemonImage(url).then((imagen) {
-
-      var data = PokemonDetails(urlImagen: imagen).toMap();
-
-      print("imagen $data");
-      _image = imagen;
-      // print(image);
-      if (pokemonRespository.getCode == 200){
-    //     page+=10;
-
-    //     final pokemon =(state as PokemonLoading).oldPokemon;
-    //     pokemon.addAll(newPokemon);
-    //     emit(PokemonLoaded(pokemon: pokemon));
-    //   }else{
-    //     emit(PokemonError());
-      }
-    });
-  }
   
-  String get getImagen => _image;
-
 
 
 
